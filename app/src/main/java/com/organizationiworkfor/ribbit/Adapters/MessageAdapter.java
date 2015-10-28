@@ -12,7 +12,9 @@ import com.organizationiworkfor.ribbit.ParseConstants;
 import com.organizationiworkfor.ribbit.R;
 import com.parse.ParseObject;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Created by Vivien on 10/22/2015.
@@ -36,6 +38,8 @@ public class MessageAdapter extends ArrayAdapter<ParseObject> {
             holder = new ViewHolder();
             holder.iconImage = (ImageView) convertView.findViewById(R.id.messageIconImageView);
             holder.nameLabel = (TextView) convertView.findViewById(R.id.messageUsernameImageView);
+            holder.timeLabel = (TextView) convertView.findViewById(R.id.dateTextView);
+            convertView.setTag(holder);
         } else {
             holder = (ViewHolder)convertView.getTag();
         }
@@ -48,11 +52,23 @@ public class MessageAdapter extends ArrayAdapter<ParseObject> {
         }
         holder.nameLabel.setText(message.getParseObject(ParseConstants.KEY_SENDER_NAME).getString(ParseConstants.KEY_USERNAME));
 
+        SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm");
+        formatter.setTimeZone(TimeZone.getDefault());
+        String dateString = formatter.format(message.getCreatedAt());
+        holder.timeLabel.setText(dateString);
+
         return convertView;
     }
 
     private class ViewHolder {
         ImageView iconImage;
         TextView nameLabel;
+        TextView timeLabel;
+    }
+
+    public void refill(List<ParseObject> messages) {
+        mMessage.clear();
+        mMessage.addAll(messages);
+        notifyDataSetChanged();
     }
 }
