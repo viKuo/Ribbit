@@ -8,7 +8,6 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.organizationiworkfor.ribbit.Adapters.MessageAdapter;
@@ -22,6 +21,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,8 +44,8 @@ public class InboxFragment extends ListFragment {
     public void onResume() {
         super.onResume();
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(ParseConstants.CLASS_MESSAGE);
-
         query.whereEqualTo(ParseConstants.KEY_RECIPIENT_IDS, ParseUser.getCurrentUser().getObjectId());
+
         query.orderByDescending(ParseConstants.KEY_CREATED_AT);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
@@ -58,8 +58,11 @@ public class InboxFragment extends ListFragment {
                         users[i] = message.getParseObject(ParseConstants.KEY_SENDER_NAME).getString(ParseConstants.KEY_USERNAME);
                         i++;
                     }
-                    MessageAdapter adapter = new MessageAdapter(getListView().getContext(), mMessages);
-                    setListAdapter(adapter);
+                    if (getListAdapter() == null) {
+                        MessageAdapter adapter = new MessageAdapter(getListView().getContext(), mMessages);
+                        setListAdapter(adapter);
+                    } else
+                        ((MessageAdapter)getListAdapter()).refill(mMessages);
                 } else {
                     AlertDialogFragment dialogFragment = new AlertDialogFragment();
                     dialogFragment.setAlertMessage(e.getMessage());
@@ -85,8 +88,22 @@ public class InboxFragment extends ListFragment {
             startActivity(intent);
         } else {
             //view video here
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            intent.setDataAndType(uri, "video/*");
+            startActivity(intent);
         }
+        List<String> ids = message.getList(ParseConstants.KEY_RECIPIENT_IDS);
+        if (ids.size() == 1) {
+            message.deleteInBackground();
+        } else {
+            ids.remove(ParseUser.getCurrentUser().getObjectId());
 
+            ArrayList<String> idsToRemove = new ArrayList<String>();
+            message.removeAll(ParseUser.getCurrentUser().getObjectId(), idsToRemove);
+            message.saveInBackground();
+        }
     }
+
+
 }
 
