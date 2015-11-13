@@ -2,16 +2,15 @@ package com.organizationiworkfor.ribbit.UI;
 
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.organizationiworkfor.ribbit.AlertDialogFragment;
 import com.organizationiworkfor.ribbit.R;
+import com.organizationiworkfor.ribbit.RibbitApplication;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
@@ -26,6 +25,7 @@ public class SignUpActivity extends AppCompatActivity {
     @Bind(R.id.passwordField) EditText mPasswordField;
     @Bind(R.id.signupButton) Button mSignUpButton;
     @Bind(R.id.progressBar) ProgressBar mProgressBar;
+    @Bind(R.id.cancelButton) Button mCancelButton;
 
 
     @Override
@@ -33,6 +33,7 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
+        getSupportActionBar().hide();
     }
 
 
@@ -63,6 +64,8 @@ public class SignUpActivity extends AppCompatActivity {
                     mProgressBar.setVisibility(ProgressBar.INVISIBLE);
                     if (e == null) {
                         //success if no exception
+                        RibbitApplication.updateParseInstallation(ParseUser.getCurrentUser());
+
                         Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -76,6 +79,11 @@ public class SignUpActivity extends AppCompatActivity {
             });
 
         }
+    }
+
+    @OnClick(R.id.cancelButton)
+    public void cancelClick() {
+        finish();
     }
 
 

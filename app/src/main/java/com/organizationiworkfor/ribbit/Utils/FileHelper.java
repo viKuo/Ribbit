@@ -1,17 +1,17 @@
-package com.organizationiworkfor.ribbit;
+package com.organizationiworkfor.ribbit.Utils;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.util.Log;
+
+import org.apache.commons.io.IOUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import org.apache.commons.io.IOUtils;
-
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.util.Log;
 
 public class FileHelper {
 	

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +13,8 @@ import android.widget.ListView;
 
 import com.organizationiworkfor.ribbit.Adapters.MessageAdapter;
 import com.organizationiworkfor.ribbit.AlertDialogFragment;
-import com.organizationiworkfor.ribbit.ParseConstants;
 import com.organizationiworkfor.ribbit.R;
+import com.organizationiworkfor.ribbit.Utils.ParseConstants;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -29,6 +30,7 @@ import java.util.List;
  */
 public class InboxFragment extends ListFragment {
     private List<ParseObject> mMessages;
+    protected SwipeRefreshLayout mSwipeRefreshLayout;
 
     public InboxFragment() {
     }
@@ -37,12 +39,23 @@ public class InboxFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_inbox, container, false);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeRefreshLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(mOnRefreshListener);
+        mSwipeRefreshLayout.setColorSchemeResources(
+                R.color.swipe_refresh1,
+                R.color.swipe_refresh2,
+                R.color.swipe_refresh3,
+                R.color.swipe_refresh4);
         return rootView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        getMessages();
+    }
+
+    private void getMessages() {
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(ParseConstants.CLASS_MESSAGE);
         query.whereEqualTo(ParseConstants.KEY_RECIPIENT_IDS, ParseUser.getCurrentUser().getObjectId());
 
@@ -51,13 +64,10 @@ public class InboxFragment extends ListFragment {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
                 if (e == null) {
-                    mMessages = objects;
-                    String[] users = new String[mMessages.size()];
-                    int i = 0;
-                    for (ParseObject message : mMessages) {
-                        users[i] = message.getParseObject(ParseConstants.KEY_SENDER_NAME).getString(ParseConstants.KEY_USERNAME);
-                        i++;
+                    if (mSwipeRefreshLayout.isRefreshing()) {
+                        mSwipeRefreshLayout.setRefreshing(false);
                     }
+                    mMessages = objects;
                     if (getListAdapter() == null) {
                         MessageAdapter adapter = new MessageAdapter(getListView().getContext(), mMessages);
                         setListAdapter(adapter);
@@ -104,6 +114,11 @@ public class InboxFragment extends ListFragment {
         }
     }
 
-
+    protected SwipeRefreshLayout.OnRefreshListener mOnRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            getMessages();
+        }
+    };
 }
 

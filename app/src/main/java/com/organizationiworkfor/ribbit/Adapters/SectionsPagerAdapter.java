@@ -5,9 +5,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.organizationiworkfor.ribbit.R;
 import com.organizationiworkfor.ribbit.UI.FriendsFragment;
 import com.organizationiworkfor.ribbit.UI.InboxFragment;
-import com.organizationiworkfor.ribbit.R;
 
 import java.util.Locale;
 
@@ -33,6 +33,16 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
                 return new FriendsFragment();
         }
         return null;
+    }
+
+    public int getIcon(int position) {
+        switch (position) {
+            case 0:
+                return R.drawable.ic_tab_inbox;
+            case 1:
+                return R.drawable.ic_tab_friends;
+        }
+        return 0;
     }
 
     @Override

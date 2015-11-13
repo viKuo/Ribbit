@@ -1,19 +1,19 @@
 package com.organizationiworkfor.ribbit.UI;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.organizationiworkfor.ribbit.Adapters.FriendsAdapter;
 import com.organizationiworkfor.ribbit.AlertDialogFragment;
-import com.organizationiworkfor.ribbit.ParseConstants;
 import com.organizationiworkfor.ribbit.R;
+import com.organizationiworkfor.ribbit.Utils.ParseConstants;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -26,19 +26,25 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class EditFriendsActivity extends ListActivity {
-    @Bind(R.id.progressBar) ProgressBar mProgressBar;
+public class EditFriendsActivity extends Activity {
+    @Bind(R.id.progressBar2) ProgressBar mProgressBar;
+    @Bind(R.id.friendsGrid) GridView mGridView;
+    @Bind(android.R.id.empty) TextView emptyTextView;
     private List<ParseUser> mUsers;
     private ParseRelation<ParseUser> mFriendRelation;
     private ParseUser mCurrentUser;
     private final static String TAG = EditFriendsActivity.class.getSimpleName();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_friends);
+        setContentView(R.layout.user_grid);
         ButterKnife.bind(this);
-        getListView().setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+        mGridView.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE);
+        emptyTextView.setText(getString(R.string.generic_error));
+        mGridView.setEmptyView(emptyTextView);
+        mGridView.setOnItemClickListener(mOnItemClickListener);
     }
 
     @Override
@@ -65,11 +71,14 @@ public class EditFriendsActivity extends ListActivity {
                         users[i] = user.getUsername();
                         i++;
                     }
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                            EditFriendsActivity.this,
-                            android.R.layout.simple_list_item_checked,
-                            users);
-                    setListAdapter(adapter);
+
+                    if (mGridView.getAdapter() == null) {
+                        FriendsAdapter adapter = new FriendsAdapter(EditFriendsActivity.this, mUsers);
+                        mGridView.setAdapter(adapter);
+                    } else {
+                        //position is saved every time something is clicked
+                        ((FriendsAdapter)mGridView.getAdapter()).refill(mUsers);
+                    }
 
                     addFriendsCheckMark();
                 } else {
@@ -90,7 +99,8 @@ public class EditFriendsActivity extends ListActivity {
                     for (int i = 0 ; i < mUsers.size(); i++) {
                         for (ParseUser friend : list) {
                             if (friend.getObjectId().equals(mUsers.get(i).getObjectId())){
-                                getListView().setItemChecked(i,true);
+                                mGridView.setItemChecked(i,true);
+                                //calls the adapter, hence adding checkmarks
                             }
                         }
                     }
@@ -101,32 +111,38 @@ public class EditFriendsActivity extends ListActivity {
         });
     }
 
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        if (getListView().isItemChecked(position)) {
-            //user just clicked on this item therefore from notChecked to checked
-            //add friend
-            mFriendRelation.add(mUsers.get(position));
-            mCurrentUser.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e != null) {
-                        Log.e(TAG, e.getMessage());
+    private AdapterView.OnItemClickListener mOnItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            //view passed in here is the relative layout of the item, aka FriendsAdapter.java/user_grid_item.xml
+            ImageView checkedImageView = (ImageView) view.findViewById(R.id.userImageChecked);
+            if (mGridView.isItemChecked(position)) {
+                //user just clicked on this item therefore from notChecked to checked
+                //add friend
+                mFriendRelation.add(mUsers.get(position));
+                checkedImageView.setVisibility(View.VISIBLE);
+                mCurrentUser.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            Log.e(TAG, e.getMessage());
+                        }
                     }
-                }
-            });
-        } else {
-            //remove friend
-            mFriendRelation.remove(mUsers.get(position));
-            mCurrentUser.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e != null) {
-                        Log.e(TAG, e.getMessage());
+                });
+            } else {
+                //remove friend
+                mFriendRelation.remove(mUsers.get(position));
+                checkedImageView.setVisibility(View.INVISIBLE);
+                mCurrentUser.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            Log.e(TAG, e.getMessage());
+                        }
                     }
-                }
-            });
+                });
+            }
         }
-    }
+    };
+
 }

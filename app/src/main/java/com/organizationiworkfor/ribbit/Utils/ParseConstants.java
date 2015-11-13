@@ -1,4 +1,4 @@
-package com.organizationiworkfor.ribbit;
+package com.organizationiworkfor.ribbit.Utils;
 
 /**
  * Created by Vivien on 10/4/2015.
@@ -16,6 +16,7 @@ public class ParseConstants {
     public static final String KEY_FILE = "file";
     public static final String KEY_FILE_TYPE = "fileType";
     public static final String KEY_CREATED_AT = "createdAt";
+    public static final String KEY_USER_ID ="userId";
 
     public static final String IMAGE = "img";
     public static final String VIDEO = "vid";

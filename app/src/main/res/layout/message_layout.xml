@@ -1,36 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent">
 
-    <ImageView
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/messageIconImageView"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:padding="@dimen/activity_horizontal_margin"
-        android:src="@drawable/ic_image_black_24dp"/>
+        android:layout_marginLeft="@dimen/inbox_horizontal_margin"
+        android:layout_marginRight="@dimen/inbox_horizontal_margin"
+        android:layout_marginTop="@dimen/inbox_vertical_margin"
+        android:background="@android:color/white"
+        android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Username Here"
-        android:id="@+id/messageUsernameImageView"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/messageIconImageView"
-        android:layout_toEndOf="@+id/messageIconImageView"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Date"
-        android:id="@+id/dateTextView"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true" />
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/messageIconImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:src="@drawable/ic_picture"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
+
+        <TextView
+            android:id="@+id/messageUsernameImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username Here"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:paddingTop="@dimen/inbox_vertical_margin"
+            android:paddingLeft="@dimen/inbox_horizontal_margin"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"/>
+
+        <TextView
+            android:id="@+id/dateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentRight="false"
+            android:text="Date"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/messageUsernameImageView"
+            android:paddingBottom="@dimen/inbox_vertical_margin"
+            android:paddingLeft="@dimen/inbox_horizontal_margin"
+            android:textSize="12sp"
+            android:textColor="@color/light_grey"/>
+    </RelativeLayout>
+</LinearLayout>

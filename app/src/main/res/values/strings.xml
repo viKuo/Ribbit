@@ -38,4 +38,8 @@
     <string name="message_success">Message sent!</string>
     <string name="message_upload_error">Something went wrong while uploading your file. Please try again</string>
     <string name="title_activity_view_image">Ribbit</string>
+    <string name="subtitle_text">A Treehouse Project</string>
+    <string name="signup_text">Don\'t have an account? Sign up!</string>
+    <string name="login_label">SIGN IN</string>
+    <string name="push_message">You have a new Ribbit message from %s!</string>
 </resources>

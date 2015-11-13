@@ -1,17 +1,16 @@
 package com.organizationiworkfor.ribbit.UI;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.organizationiworkfor.ribbit.AlertDialogFragment;
 import com.organizationiworkfor.ribbit.R;
+import com.organizationiworkfor.ribbit.RibbitApplication;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -34,6 +33,7 @@ public class LogInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
         ButterKnife.bind(this);
+        getSupportActionBar().hide();
     }
 
     @OnClick(R.id.signupText)
@@ -63,8 +63,9 @@ public class LogInActivity extends AppCompatActivity {
                 public void done(ParseUser parseUser, ParseException e) {
                     mProgressBar.setVisibility(ProgressBar.INVISIBLE);
                     if (e == null) {
-                        setProgressBarIndeterminateVisibility(true);
                         //success if no exception
+                        RibbitApplication.updateParseInstallation(parseUser);
+
                         Intent intent = new Intent(LogInActivity.this, MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

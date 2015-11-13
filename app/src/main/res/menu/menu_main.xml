@@ -1,8 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:tools="http://schemas.android.com/tools"
-      xmlns:ribbit="http://schemas.android.com/apk/res-auto"
-      tools:context=".MainActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:ribbit="http://schemas.android.com/apk/res-auto"
+    tools:context=".MainActivity">
     <item android:id="@+id/edit_friends"
           android:title="@string/edit_friends_label" />
     <item android:id="@+id/log_out"
@@ -10,7 +9,7 @@
     <item android:id="@+id/camera_action"
           android:title="@string/camera_label"
           ribbit:showAsAction="ifRoom"
-          android:icon="@drawable/ic_camera_white_24dp"/>
+          android:icon="@drawable/ic_menu_camera"/>
 
 
 </menu>

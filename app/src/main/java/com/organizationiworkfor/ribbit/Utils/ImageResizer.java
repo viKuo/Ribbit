@@ -1,6 +1,4 @@
-package com.organizationiworkfor.ribbit;
-
-import java.io.ByteArrayOutputStream;
+package com.organizationiworkfor.ribbit.Utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
